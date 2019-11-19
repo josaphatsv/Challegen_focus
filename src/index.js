@@ -17,28 +17,15 @@ function obtenerDatos(){
 			let datos = JSON.parse(this.responseText);
 			let resultado = document.querySelector('#resultado');
 			resultado.innerHTML='';
+			let username='';
 			var i=0;
 			for (let item of datos) {
-				//direccion de la Api
-				let user=`https://jsonplaceholder.typicode.com/users/${item.id}`;
-				let username='';
-				//creamos el objeto api
-				const apinfo = new XMLHttpRequest();
-				apinfo.open('GET',user,true);
-				apinfo.send();
-				apinfo.onreadystatechange = function(){
-					if (apinfo.status==200 && apinfo.readyState==4) {
-						//convertimos el dato en Json para manipularlo
-						let userInfo = JSON.parse(apinfo.responseText);
-						username=userInfo.name;
-						
-					}
-
-				}
 				i++;
+				username=obtenerName(item.id);
 				resultado.innerHTML+= `<div class="col-md-4 mt-5" >
 										 <img src="..." alt="..." class="img-thumbnail"> 
-										 id: ${item.id}
+										 <br/>
+										 id: ${item.id}<br/>
 										 <h4>${username}</h4>
     									<h5 >${item.title} </h5>
     									<p >${item.body}</p>
@@ -54,3 +41,28 @@ function obtenerDatos(){
 		}
 	}
 }
+
+
+
+function obtenerName(id){
+	//direccion de la Api
+	
+	$.ajax({
+			dataType:"JSON",
+			url:"https://jsonplaceholder.typicode.com/users/",
+			type:"GET",
+			data:id,
+			async: false,
+			success:function(res){
+				 var json = $.parseJSON(res);
+
+				if (id == json.id) {
+		   			return json.name;
+
+				}
+		}
+
+		});
+}
+
+		
